@@ -38,7 +38,43 @@ const MORSE_TABLE = {
 };
 
 function decode(expr) {
-    // write your solution here
+
+    //функция для раскодировки
+    function decodeMorse(code) {
+        return MORSE_TABLE[code];
+    }
+
+    //запихиваем все что в expr в один массив, получаем [000111101101101011010101101111100000]
+    let arr = [];
+    for (let i = 0; i < expr.length; i++){
+        arr[i] = expr[i]
+    }
+
+    //разделим масcив на подмасcивы по 10 элементов, получаем [[0000011111], [000111110] ....]
+    let arr2 = [];
+    arr.forEach((_, y, z) => !(y % 10) ? arr2.push(z.slice(y, y + 10)) : '');
+
+    // пройдем по каждому подмаcсиву в массиве найдем первую единицу и удалим все 0 до первой единицы , получаем [[11111], [111110] ....]
+    let arr3 = arr2.map(item => {
+        let indexof1 = item.indexOf('1'); //индекс первой единицы
+        return indexof1 === -1 ? [] : item.slice(indexof1).join('')
+    })
+
+    //преобразуем остатки из цифр в знаки
+    let arr4 = [];
+    arr3.forEach(item => { //идем по каждому элементу массива (по подмассивам)
+        let str = ''; // Создаем строчку куда будем писать тест весь
+        for(let i = 0; i < item.length; i +=2) { //запускаем цикл по подмасиву, пока соответсвуем размеру элемента, +2  - шаг в 2 элемента
+            let el = item.slice(i, i + 2); // По 2 символа отрезаем   10 или 11
+            if (el === '10') {
+                str += '.'
+            } else if (el === '11') {
+                str += '-'
+            }
+        }
+        arr4.push(str); //закидываем все в массив 
+    })
+    return arr4.map(code => decodeMorse(code)).join(''); //вернем раскодированные эементы и соедимим в слово
 }
 
 module.exports = {
